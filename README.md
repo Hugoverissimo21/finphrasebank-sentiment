@@ -31,6 +31,7 @@ for **train** you can either use `data/75Agree_train.csv` OR `data/AnyAgree_trai
     - Data balance
     - Some model
     - **Use data augmentation** techniques such as back-translation, synonym replacement, etc.
+    - https://neptune.ai/blog/data-augmentation-nlp
     - lalla
 
 3. Weights Model
