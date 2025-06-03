@@ -25,7 +25,7 @@ for **train** you can either use `data/75Agree_train.csv` OR `data/AnyAgree_trai
     - Some model
     - lalla
     - IDEA: maybe use different backbones and then with the best apply the model 2 and 3 idk
-    - MISSING: save results (plots and metrics), and note the each run has differente results
+    - MISSING: save results (plots and metrics), and note the each run has differente results;; exprimentar varios "backbones"/arquiteturas
 
 2. Data Augmentation Model
 
