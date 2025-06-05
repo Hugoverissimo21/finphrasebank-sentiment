@@ -113,6 +113,8 @@ o dataset foi anotado (labels) por 16 anotadores com background em economia/fina
 
 estes subsets permitem aos investigadores ter um equilíbrio entre quantidade de dados e qualide dos dados, representando um trade-off muito comum no espaço da aprendizagem automática (ig)
 
+VER MAIS COISAS SOBRE OS DADOS AINDA
+
 % exemplos de frases
 
 %Sentence: According to Gran , the company has no plans to move all production to Russia , although that is where the company is growing ., Label: neutral
@@ -153,7 +155,11 @@ most relevant words for class identification by checking which words appear much
 
 \subsection{Preprocessing}
 
-split teste e treino
+split teste e treino (80/20) do dataset de 75 de agreement
+
+dps tendo em conta essa porção de 20, tbm se removeu esses documentos dos restantes subsets para evitar possivel leakage (pq usamos dps os subsets na cena dos pesos, ns como queres dizer ou se faz sentido dizer aqui se quer)
+
+o preprocessamento dos dados acabou por variar de modelo para modelo, em termos da estrura dos dados ou transofmacoes nas frases tendo por base os pre requistos dos mesmos, sendo a unica constante o balanceamento das classes nos dados de treino antes de qualquer tunning ou treino.
 
 \section{Models}
 
