@@ -144,6 +144,8 @@ tendo em conta os vários subsets dispobíveis do Financial Phrasebank, o escolh
     \label{fig:word_count_distribution}
 \end{figure}
 
+este word count dist ajudou na escolha do numero de tokens a usar, o max len nos tokenizers \ref{fig:word_count_distribution}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/word_cloud_75agree.png}
@@ -187,8 +189,29 @@ dataset so se usou o 75agree com o split 80/20 feito inicialmente
 
 houve fine tunning dos hyp para cada um dos modelos usando 5-fold cv para a escolha destes e depois retreino com estes hyp nos dados de treino completos
 
+\begin{table}[H]
+\centering
+\caption{base model metrics across models}
+\label{basemodel_models}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Model} & \multicolumn{2}{c}{\textbf{Accuracy}} & \multicolumn{2}{c}{\textbf{F1 (weighted)}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+ & \textbf{Train} & \textbf{Test} & \textbf{Train} & \textbf{Test} \\
+\midrule
+fastText & 0.54 & 0.65 & 0.45 & 0.58 \\
+LSTM & 0.67 & 0.66 & 0.63 & 0.63 \\
+BERT & 0.97 & 0.92 & 0.97 & 0.92 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 apesar de ainda n ter a tabela fastext < lstm < bert
 
+lstm vai ao encontro dos resulados descritos na literatura, apesar de um pouco piores por n termos usado bi-LSTM nem ELMo, seja lá oq isso for
+
+
+sendo que o bert foi o melhor, indicamos mais detalhes osbre o modelo:::
 
 \begin{table}[H]
 \centering
@@ -272,11 +295,75 @@ Positive & 0.84 & 0.92 & 0.88 & 178 \\
 \end{tabular}
 \end{table}
 
-\subsection{data augmention model}
+\subsection{B. data augmention model}
 
-lalallala
+para esta abordagem foi usada online data augmention nas várias frases do dataset de treino do 75Agree
+
+esta data augmentation consistitiu em:
+
+Back-Translation : Translation-based augmentation using intermediate language pivoting to generate paraphrases.
+
+%em especificio foi traduzir de ingles para uma outra ingles, neste caso o alemão e dps de volta para inglês
+
+Lexical Substitution : Random substitution of words with WordNet-based synonyms.
+
+% big = huge
+
+Template-Based Augmentation : Named Entity-aware augmentation by replacing entities (ORG, DATE, EVENT) using slot-filling over extracted templates.
+
+% Apple, Microsof -> <ORG>, dates -> <DATE>, ...
+
+alguns exemplos desta augmention são
+
+1. In the building and home improvement trade , sales decreased by 22.5 \% to EUR 201.4 mn .
+
+-> in the building and diy trade, sales decreased by 22. 5 \% to eur 201. 4 million.
+
+2. In a media advisory , .......
+
+-> in a media consultation
+
+
+
+
+\begin{table}[H]
+\centering
+\caption{Hyperparameter space for ......}
+\label{parameters_basebert}
+\begin{tabular}{ll}
+\toprule
+\textbf{Hyperparameter} & \textbf{Possible Values} \\
+\midrule
+Epochs & $\{1,2,3,4,5\}$ \\
+Learning rate & $[10^{-5}, 10^{-2}]$ \\
+Weight decay & $[0, 0.5]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+best hyperameters: 
+
+- Num train epochs: ?
+
+- Learning rate: ?
+
+- Weight decay: ?
+
+
+
 
 \subsection{weighted model}
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Discussion}
 
