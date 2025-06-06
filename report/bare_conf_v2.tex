@@ -232,9 +232,71 @@ sendo que o objetivo principal é ent a classificacao das frases presentes no co
 Falar sobre os modelos que usámos para este trabalho e as suas arquitecturas, FASTTEXT, LSTM, 
 FALTA METER AQUI FASTTEXT, LSTM, ...
 
+ACHO Q AINDA NAO DISSEMOS EM LADO NENHUM QUE O BERT É o google-bert/bert-base-uncased
+
 dataset so se usou o 75agree com o split 80/20 feito inicialmente
 
-houve fine tunning dos hyp para cada um dos modelos usando 5-fold cv para a escolha destes e depois retreino com estes hyp nos dados de treino completos
+houve fine tunning dos hyp para cada um dos modelos usando 5-fold cv para a escolha destes e depois retreino com estes hyp nos dados de treino completos (tabela abaixo para espaço de procura \ref{tab:basemodel_hyp})
+
+\begin{table}[H]
+    \caption{Hyperparameter search space for the base models?...}
+    % os comandos \phantom é para adicionar espaço para as tabelas terem a mesma width, não apagar
+    \centering
+    \label{tab:basemodel_hyp}
+    \begin{subtable}[t]{0.45\textwidth}
+        \centering
+        \begin{tabular}{ll}
+        \toprule
+        \textbf{Hyperparameter} & \textbf{Possible Values} \\
+        \midrule
+        Number of epochs \phantom{abcn} & $\{20, 21, \ldots, 99\}$ \\
+        Learning rate           & $[10^{-5}, 10^{-2}]$ \\
+        Embedding dimension     & $\{100, 200, 300\}$ \\
+        \bottomrule
+        \end{tabular}
+        \vspace{.3em}
+        \caption{fastText hyperparameters.}
+        \label{parameters_basefasttext}
+        \vspace{.1em}
+    \end{subtable}
+    \begin{subtable}[t]{0.45\textwidth}
+        \centering
+        \begin{tabular}{ll}
+        \toprule
+        \textbf{Hyperparameter} & \textbf{Possible Values} \\
+        \midrule
+        Embedding dimension     & $\{32, 64, 128, 256\}$ \\
+        LSTM units              & $\{32, 64, 128, 256\}$ \\
+        Epochs                  & $\{2, 3, 5, 8, 10, 15\}$ \\
+        Learning rate           & $[10^{-5}, 10^{-3}]$ \\
+        Dropout                 & $[0, 0.5]$ \\
+        Recurrent dropout       & $[0, 0.5]$ \\
+        \bottomrule
+        \end{tabular}
+        \vspace{.3em}
+        \caption{LSTM hyperparameters.}
+        \vspace{.1em}
+        \label{parameters_baselstm}
+    \end{subtable}
+    \begin{subtable}[t]{0.45\textwidth}
+        \centering
+        \begin{tabular}{ll}
+        \toprule
+        \textbf{Hyperparameter} & \textbf{Possible Values} \\
+        \midrule
+        Epochs \phantom{abcng dimension} & $\{1,2,3,4,5\}$ \\
+        Learning rate & $[10^{-5}, 10^{-2}]$ \\
+        Weight decay & $[0, 0.5]$ \\
+        \bottomrule
+        \end{tabular}
+        \vspace{.3em}
+        \caption{BERT hyperparameters.}
+        \label{parameters_basebert}
+    \end{subtable}
+\end{table}
+
+
+após ajuste dos modelos com os melhores hyperparaemtros, tendo em conta a validation loss, aos dados completos de treino, resultaram os seguintes resultados \ref{basemodel_models}
 
 \begin{table}[H]
 \centering
@@ -253,27 +315,11 @@ BERT & 0.97 & 0.92 & 0.97 & 0.92 \\
 \end{tabular}
 \end{table}
 
-apesar de ainda n ter a tabela fastext < lstm < bert
+ou seja fastext < lstm < bert
 
 lstm vai ao encontro dos resulados descritos na literatura, apesar de um pouco piores por n termos usado bi-LSTM nem ELMo, seja lá oq isso for
 
-
 sendo que o bert foi o melhor, indicamos mais detalhes osbre o modelo:::
-
-\begin{table}[H]
-\centering
-\caption{Hyperparameter space for ......}
-\label{parameters_basebert}
-\begin{tabular}{ll}
-\toprule
-\textbf{Hyperparameter} & \textbf{Possible Values} \\
-\midrule
-Epochs & $\{1,2,3,4,5\}$ \\
-Learning rate & $[10^{-5}, 10^{-2}]$ \\
-Weight decay & $[0, 0.5]$ \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 best hyperameters: 
 
@@ -408,6 +454,9 @@ best hyperameters:
     \caption{learning curve}
     \label{fig:data_augmented_bert_learninc_curve}
 \end{figure}
+
+
+aqui \ref{fig:data_augmented_bert_learninc_curve} ela ainda nao convergiu, mas pq fizemos cv com o numero de epochs é como se fosse um earlystopping
 
 \begin{figure}[H]
     \centering
