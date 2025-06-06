@@ -217,6 +217,8 @@ imagina, esta secção é metodologia, fará sentido dizer aqui de vez o cv vali
 
 learning curve + comparacao de metricas de teste e de treino para evitar overfitting
 
+e class balance
+
 \section{Models ????}
 
 sendo que o objetivo principal é ent a classificacao das frases presentes no conjunto de teste (20\% do subset do 75agree), foram exploradas três abordagens distintas focando no equilibrio de entre quantidade e qualidade dos dados
@@ -304,13 +306,13 @@ após ajuste dos modelos com os melhores hyperparaemtros, tendo em conta a valid
 \label{basemodel_models}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Model} & \multicolumn{2}{c}{\textbf{Accuracy}} & \multicolumn{2}{c}{\textbf{F1 (weighted)}} \\
+\textbf{Model} & \multicolumn{2}{c}{\textbf{Accuracy}} & \multicolumn{2}{c}{\textbf{F1 (macro)}} \\
 \cmidrule(lr){2-3} \cmidrule(lr){4-5}
  & \textbf{Train} & \textbf{Test} & \textbf{Train} & \textbf{Test} \\
 \midrule
-fastText & 0.54 & 0.65 & 0.45 & 0.58 \\
+fastText & 0.54 & 0.65 & 0.45 & 0.44 \\
 LSTM & 0.67 & 0.66 & 0.63 & 0.63 \\
-BERT & 0.97 & 0.92 & 0.97 & 0.92 \\
+BERT & 0.97 & 0.92 & 0.97 & 0.91 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -554,9 +556,9 @@ $$
 
 This approach leverages confidence information from agreement levels without distorting the overall loss scale during training.
 
-esta formula é usada para atribuir os pesos aos diferentes niveis de agreemente que por sua vez, este peso é usado para multiplicar pela loss de cada instancia (tendo em conta a classe de agreement onde se encontra), fazendo com que a loss total ao longo do treino tenho mais um maior contributo dos maiores niveis de agreement face aos menores
+esta formula é usada para atribuir os pesos aos diferentes niveis de agreemente que por sua vez, este peso é usado para multiplicar pela loss de cada instancia (tendo em conta a classe de agreement onde se encontra), fazendo com que a loss total ao longo do treino tenho mais um maior contributo dos maiores niveis de agreement face aos menores. ou seja usamos uma custom loss fucntion
 
-
+pelo facto de ja ter em conta o dataset todo, o class balance resultatou num total de 520 obs por classe de sentimento ao invés das 336 habituais (qnd era so 75 agreement), aumentado o conjunto de treino num total de 552 obs
 
 lalalala hyp
 
@@ -577,27 +579,112 @@ Weight decay & $[0, 0.5]$ \\
 
 best hyperameters: 
 
-- Num train epochs: ?
+- Num train epochs: 3
 
-- Learning rate: ?
+- Learning rate: 0.0001
 
-- Weight decay: ?
+- Weight decay: 0.1
 
 
-........ resultados
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/weighted_bert_learning_curve.png}
+    \caption{learning curve}
+    \label{fig:weighted_bert_learning_curve}
+\end{figure}
+
+na fig \ref{fig:weighted_bert_learning_curve} pode se ver a learning curve que representa a weighted loss fucntion dos dados de treino comparada com a loss fucntion dos dados de teste, sem qualquer peso, visto ser o nosso teste então é supsto dar a mesma importancia a tudo (ns explicar)
+
+bla bla comprar metricas de teste e treino, mas por dificuldades de usar os pesos nesta analise foi ent selecionada só a porcao de dados de treino cujo agreement era supior a 75\% usado nos dados de treino, visto q o foco do trabalho se cinge neste conjunto, tendo todas as instancias o mesmo peso nestas metricas fig. \ref{fig:weighted_bert_confusion_matrix_Partial} e table \ref{cr_weightbert_train}. e até pq tp por exemplo na confusion matrix por ser quantidades de instancias seria injunto por exemplo instancias de baixo agreement penalizarem tanto como instancias de alto agreement.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/weighted_bert_confusion_matrix_Partial Train.png}
+    \caption{weighted bert conf matri PARTIAL train}
+    \label{fig:weighted_bert_confusion_matrix_Partial}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Classification report for weight BERT on PARTIAL training data.}
+\label{cr_weightbert_train}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\
+\midrule
+Negative & 0.83 & 1.00 & 0.91 & 336 \\
+Neutral & 0.99 & 0.93 & 0.96 & 1717 \\
+Positive & 0.90 & 0.85 & 0.93 & 709 \\
+\midrule
+\textbf{Accuracy} &  &  & 0.94 & 2762 \\
+\textbf{Macro avg} & 0.91 & 0.96 & 0.93 & 2762 \\
+\textbf{Weighted avg} & 0.95 & 0.94 & 0.94 & 2762 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/weighted_bert_confusion_matrix_Test.png}
+    \caption{weight bert cong matrix test}
+    \label{fig:weighted_bert_confusion_matrix_Test}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Classification report for weight BERT on test data.}
+\label{cr_augmbert_test}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\
+\midrule
+Negative & 0.78 & 0.94 & 0.85 & 84 \\
+Neutral & 0.97 & 0.93 & 0.95 & 429 \\
+Positive & 0.88 & 0.89 & 0.89 & 178 \\
+\midrule
+\textbf{Accuracy} &  &  & 0.92 & 691 \\
+\textbf{Macro avg} & 0.88 & 0.92 & 0.90 & 691 \\
+\textbf{Weighted avg} & 0.93 & 0.92 & 0.92 & 691 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 para melhorar estes resultados poderia ser levado a cabo um fine tuning ou a escolha por parte de um expert dos raw agreement scores ou uma melhoria da formula dos pesos
-
-
-
 
 
 \section{Discussion}
 
 results discuttion
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/results_radarchart.png}
+    \caption{radar chart results in test set (métricas são MACRO avg)}
+    \label{fig:results_radarchart}
+\end{figure}
 
+\ref{fig:results_radarchart} mostra que as tres abordagens criam modelos com metricas comparativas, apesar de neste caso o modelo Base BERT mostrar um desempenho superior a todos os outros em todas as metricas, mas tendo em conta o seu possivel overfifting, acaba por haver mais destaque para o weighted bert que o acaba por bater em algumas métricas tlvz sem o problema do overtffintg
+
+tbm temos os resultados em tabela:
+
+\begin{table}[H]
+\centering
+\caption{prefomece comparacion int test set vs literature aka soota}
+\label{results_table}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{Accuracy} & \textbf{F1 (macro)} \\
+\midrule
+base BERT & 0.92 & 0.91 \\
+data augm BERT & 0.89 & 0.87 \\
+weifhted BERT & 0.92 & 0.90 \\
+literaturas1 & xxx & ver \\
+literaturas2 & yyy & GPT \\
+literaturas3 & zzz & research?? \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Conclusion}
 
