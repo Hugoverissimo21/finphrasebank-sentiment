@@ -183,15 +183,15 @@ With the maining goal of classifying the sentiment of sentences, we have selecte
 
 \subsubsection{Long Short-Term Memory}
 
-LSTM is a type of recurrent neural network (RNN), introduced by Hochreiter and Schmidhuber (1997). Its architecture was though to solve the vanishing gradient problem in most RNN, by introducing memory cells and gating mechanisms (input, output, and forget gates), to retain long term relations in sequential data (such as time series, or sentences).
+LSTM is a type of recurrent neural network (RNN), introduced by Hochreiter and Schmidhuber (1997). Its architecture was designed to solve the vanishing gradient problem common in standard RNNs by introducing memory cells and gating mechanisms (input, output, and forget gates) to retain long term dependencies in sequential data, such as time series or sentences. In the present work, a standard LSTM architecture was used, without pre-training.
 
 \subsubsection{fastText}
 
-Developed by Joulin \textit{et al.} at Facebook AI (2016), fastText is built on the Word2Vec (word representation in a vectorial space) and extended it by incorporating subword information. Rather than representing each word as a single entity, it breaks it down to character n-grams. This allows to represent sentences by averaging word embeddings, making it very lightweight and fast to train on large datasets, with minimal tuning. The lightweightness and little tunability makes it less differenciate and harder to adapt to specific cases.
+Developed by Joulin \textit{et al.} at Facebook AI (2016), fastText is built on the Word2Vec (word representation in a vectorial space) and extended it by incorporating subword information. Rather than representing each word as a single entity, it breaks it down to character n-grams. This allows to represent sentences by averaging word embeddings, making it very lightweight and fast to train on large datasets, with minimal tuning. The lightweightness and little tunability makes it less differenciate and harder to adapt to specific cases. In the present study, the standard supervised fastText implementation was used for sentence classification, without pre-trained embeddings.
 
 \subsubsection{Bidirectional Encoder Representations from Transformers}
 
-BERT was introduced by Devlin \textit{et al.} and colleagues at Google (2018), and is a deep-transformer model pre-trained on large corpora using masked language modeling (hiding one word in the sentence for the model to predict) and next sentence prediction. BERT is capable of considering both forwards and backwards dependencies with a word, simultaneously. This allows for much better understanding of nuanced language patterns and semantics. Despite the higher computational requirements, it still is manageable at a local level, and benefits heavily from fine-tuning for specific NLP tasks.
+BERT was introduced by Devlin \textit{et al.} and colleagues at Google (2018), and is a deep-transformer model pre-trained on large corpora using masked language modeling (hiding one word in the sentence for the model to predict) and next sentence prediction. BERT is capable of considering both forwards and backwards dependencies with a word, simultaneously. This allows for much better understanding of nuanced language patterns and semantics. Despite the higher computational requirements, it still is manageable at a local level, and benefits heavily from fine-tuning for specific NLP tasks. In this work, the \texttt{bert-base-uncased} variant was used as the base model.
 
 \subsection{Initial Benchmark}
 
