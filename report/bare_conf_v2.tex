@@ -43,13 +43,13 @@ joaopcardoso@ua.pt}}
 \thispagestyle{plain}
 
 \begin{abstract}
-abstratotoototot
+This work explores financial sentiment analysis using the Financial PhraseBank dataset, a benchmark in the field for its annotated financial news snippets. We evaluate and compare the performance of three different models — fastText, LSTM, and BERT — on a selected subset with 75\% annotator agreement. BERT-based models significantly outperform the others, leading to further refinement through data augmentation and a novel weighted training strategy that incorporates annotator agreement levels during training. The proposed models achieve performance in line with, or surpassing, literature baselines, demonstrating the importance of both architecture selection and annotation-informed weighting schemes in financial NLP.
 \end{abstract}
 
 \begin{quote}
 \small
 \noindent
-\textbf{Keywords:} key, word, number, 1
+\textbf{Keywords:} finance, sentiment analysis, transformers
 \end{quote}
 
 \IEEEpeerreviewmaketitle
@@ -59,29 +59,27 @@ abstratotoototot
 
 With the ever increasing volume of information created and distributed by the minute, it is more important than ever to have access to fast and reliable analysis of any information we may come across. Especially with the democratized access to financial instruments and capital markets, where individuals have the possibility to invest in virtually any company on the stock exchange, it is important to have ways to leverage against giant institutions with hundreds of financial analysts at their disposal. 
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{bugs.png}
-    \caption{Power to the people, colorized (circa 1917).}
-    \label{fig:enter-label}
-\end{figure}
+Historically, financial analysis relied heavily on fundamental analysis (examining earnings, balance sheets, annual financial reports), which required extensive knowledge in the field (also the strategy that made Warren Buffett one of the richest men in the world), along with technical analysis (studying price and volume trends). Around 2010, after the 2008 global financial crisis, there was a surge in news analysis to evaluate the tone and derive investment strategies from it \cite{tetlock2007giving}. Due to the lack of domain specific lexicon these analysis were falible, until the work by Loughran and McDonald was published, a financial lexicon based on 10-K forms (i.e., annual financial reports) and dictionaries \cite{loughran2011liability}. This allowed to use more sofisticated analysis rather than using the presence of negative words as a signal to sell.
 
-Historically, financial analysis relied heavily on fundamental analysis (examining earnings, balance sheets, annual financial reports), which required extensive knowledge in the field (also the strategy that made Warren Buffett one of the richest men in the world), along with technical analysis (studying price and volume trends). Around 2010, after the 2008 global financial crisis, there was a surge in news analysis to evaluate the tone and derive investment strategies from it. Due to the lack of domain specific lexicon these analysis were falible, until the work by Loughran and McDonald was published, a financial lexicon based on 10-K forms (i.e., annual financial reports) and dictionaries. This allowed to use more sofisticated analysis rather than using the presence of negative words as a signal to sell.
+Upon the launch of Twitter, information streams increased dramatically, making more and more data available for analysis. But, machine learning was not heavily used, as most data was not annotated, or there was very little data with high-quality annotations. In 2014, P. Malo \textit{et al.} published a fundamental dataset for financial sentimental analysis, that is still used, the Financial Phrasebank. It is unique, for the inclusion of important aspects as directional expressions (e.g., profits decreased), entity polarity shifts (e.g. profits may be negative if decreased), and phrase level context \cite{malo2014good}.
 
-Upon the launch of Twitter, information streams increased dramatically, making more and more data available for analysis. But, machine learning was not heavily used, as most data was not annotated, or there was very little data with high-quality annotations. In 2014, P. Malo \textit{et al.} published a fundamental dataset for financial sentimental analysis, that is still used, the Financial Phrasebank. It is unique, for the inclusion of important aspects as directional expressions (e.g., profits decreased), entity polarity shifts (e.g. profits may be negative if decreased), and phrase level context.
-
-With this, machine learning models started finding their place in research, as the field of natural language processing (NLP) grew and niche fields such as financial investments found useful data. In this work we explore the Financial Phrasebank dataset, by implementing different machine learning and deep learning models to evaluate the sentiment of sentences related to financial news.
+With this, machine learning models started finding their place, as the field of natural language processing (NLP) grew and niche fields such as financial investments found more useful data. In this work we explore the Financial Phrasebank dataset, by implementing different machine learning and deep learning models to evaluate the sentiment of sentences related to financial news.
 
 \section{State of The Art}
 
 The field of NLP has grown drastically in the past decade, progressing from recurrent neural networks (RNN) and related models such as Long-Short Term Memory (LSTM), to the transformers-type models, large language models (LLM) and text generative models as ChatGPT. With the Financial Phrasebank the field expanded into financial analysis, with several works of relevance being published in recent years.
 
-In the work of Araci (2019), the author developed a BERT-based model trained specifically on texts with financial data. BERT, Bidireccional Encoder Representations from Transformers, is a large language model developed by Google (2018), benefitting largely from the fact that it can "hold" in memory large chunks and in both directions, simultaneously. The fact that it is built on the Transformer encoder architecture, it can weigh the importance of different words in a sentence by using a self-attention. The model is pre-trained  on large unlabelled corpora (e.g., Wikipedia, BookCorpus), and can be fine-tuned for specific purposes. In this work, the end model was trained on  domain specific corpus such as TRC2-financial data and financial specific texts (over ~440 000 sentences), and then fine tuned with the Financial Phrasebank. The model achieved an accuracy of 97\% on the Financial Phrasebank dataset with 100\% agreement, but 86\% and 85\% respectively on the dataset with all levels of agreement (the agreement will be further detailed in the Methodology section). Later on the model was further improved by Sun \textit{et al.} (2025), EnhancedFinSentiBERT, by including dictionary embeddings, expanded corpus that deversified the pre-training stage drastically, and a novel neutral sentiment module, that further enhanced the distinction between neutral and weak sentiments, resulting in improved accuracy (89\%) and F1-score (88\%). The pre-training stage benefited from the large diversity of the corpus, going from a few million tokens to 2.4 B tokens with the latest version. 
-In a similar direction, but at the fine tuning level, Atsiwo (2024) improved the data used in fine tuning, considering that most datasets have relatively short sentences ($<$ 100 tokens), failing to leverage the full context window  of LLMs like BERT (512 tokens). This was achieved by augmenting  the training data with synthetic sentences generated by GPT-4, with accuracy of 89\% and F1-score of 88\% for 50\% agreement dataset. 
+In the work of Araci (2019), the author developed a BERT-based model trained specifically on texts with financial data. BERT, Bidireccional Encoder Representations from Transformers, is a large language model developed by Google (2018), benefitting largely from the fact that it can "hold" in memory large chunks and in both directions, simultaneously \cite{devlin2019bert}. The fact that it is built on the Transformer encoder architecture, it can weigh the importance of different words in a sentence by using a self-attention. The model is pre-trained  on large unlabelled corpora (e.g., Wikipedia, BookCorpus), and can be fine-tuned for specific purposes. In this work, the end model was trained on  domain specific corpus such as TRC2-financial data and financial specific texts (over ~440 000 sentences), and then fine tuned with the Financial Phrasebank. The model achieved an accuracy of 97\% on the Financial Phrasebank dataset with 100\% agreement, but 86\% and 85\% respectively on the dataset with all levels of agreement (the agreement will be further detailed in the Methodology section) \cite{araci2019finbert}. 
 
-GPT has been used with different purposes, as in the work by Zhou \textit{et al.} (2023), where GPT-3.5Turbo was used for zero-shot sentiment classification. However, it performed worse than finely tuned models (accuracy of 75\% and F1-score of 74\%).
+Later on the model was further improved by Sun \textit{et al.} (2025), EnhancedFinSentiBERT, by including dictionary embeddings, expanded corpus that deversified the pre-training stage drastically, and a novel neutral sentiment module, that further enhanced the distinction between neutral and weak sentiments, resulting F1-score (88\%). The pre-training stage benefited from the large diversity of the corpus, going from a few million tokens to 2.4 B tokens with the latest version \cite{sun2025financial}. %não sei onde tinha ido buscar o valor de 89%, o gpt é capaz de ter inventado, daí ter removido o valor de accuracy daqui
 
-The BERT model was revisited by different researchers, but a new iteration from Facebook AI was proposed (2019) named RoBERTa (Robustly Optimized BERT Approach) was developed, that used a signficantly larger corpus for training (10x larger), and a dynamic masking technique during training, that allowed the model to learn new contextual relations while using the same sentences, making it more robust. This model was used as BERT to develop financial models, where the work Choe \textit{et al.} (2023) is worth mentioning, where a large corpus of financial texts were fed to the model for training, from a range of sources (e.g., Reuters, SEC fillings, EIA). The model (FiLM, Financial Language Model) benefited from the diversity of training data, rather than simply focusing on fine tuning with highly curated data, showing improved generalization and better metrics than FinBERT and RoBERTa (accuracy 88\%, F1-score 87\%). These models are improving substantially over the years, but it is different to put them to test against a controlled dataset from using them in real life, and the variety included as consequence. Competitions such as FinNLP help drive research in this field, by posing ever more diversified test sets, aiming to improve the robustness of models, and the solutions developed by the researchers.
+In a similar direction, but at the fine tuning level, Atsiwo (2024) improved the data used in fine tuning, considering that most datasets have relatively short sentences ($<$ 100 tokens), failing to leverage the full context window  of LLMs like BERT (512 tokens). This was achieved by augmenting  the training data with synthetic sentences generated by GPT-4, with accuracy of 89\% and F1-score of 88\% for 50\% agreement dataset \cite{atsiwo2024financial}. 
+
+GPT has been used with different purposes, as in the work by Fatouros \textit{et al.} (2023), where GPT-3.5Turbo was used for zero-shot sentiment classification. These conditions are harder on the model, as it never undergoes specific training for the context, relying solely on its pre-training (hence the poorer performance against finely tuned models). Under the same conditions (not using the Financial PhraseBank, but scraped headlines related with forex trading), it outperformed finely tuned models with an accuracy of 75\% and F1-score of 74\% (finely tuned models in zero-shot conditions achieve accuracy of 56\% and F1-score of 55\%) \cite{fatouros2023chatgpt}.
+
+The BERT model was revisited by different researchers, but a new iteration from Facebook AI was proposed (2019) named RoBERTa (Robustly Optimized BERT Approach) was developed, that used a signficantly larger corpus for training (10x larger), and a dynamic masking technique during training, that allowed the model to learn new contextual relations while using the same sentences, making it more robust \cite{liu2019roberta}. This model was used to develop financial models, where the work Choe \textit{et al.} (2023) is worth mentioning, where a large corpus of financial texts were fed to the model for training, from a range of sources (e.g., Reuters, SEC fillings, EIA). The model (FiLM, Financial Language Model) benefited from the diversity of training data, rather than simply focusing on fine tuning with highly curated data, showing improved generalization and better metrics than FinBERT and RoBERTa (accuracy 86\%, F1-score 84\%) \cite{choe2023exploring}.
+
+These models are improving substantially over the years, but it is different to put them to test against a controlled dataset from using them in real life, and the variety included as consequence. Competitions such as FinNLP help drive research in this field, by posing ever more diversified test sets, aiming to improve the robustness of models, and the solutions developed by the researchers.
 
 
 \section{Methodology}
@@ -95,7 +93,7 @@ The Financial PhraseBank is a widely used benchmark dataset for financial sentim
 
 \begin{table}[H]
 \centering
-\caption{Financial PhraseBank distribution. Four possible sets within the dataset, depending on how many financial experts agreed with the attributed label. The dataset with 50\% agreement corresponds to the entire dataset.}
+\caption{Financial PhraseBank distribution. Four possible sets within the dataset, depending on how many financial experts agreed with the attributed label. (majority agreement statistics). The dataset with 50\% agreement corresponds to the entire dataset.}
 
 \label{agreement_datasets}
 \begin{tabular}{lcccc}
@@ -141,7 +139,6 @@ In banking , Sampo A was unchanged at 14.24 eur and Nordea rose 0.42 pct to 9.51
 \end{tabular}
 \end{table}
 
-
 \subsection{Exploratory Data Analysis}
 
 Taking into consideration the different possible subsets, we selected the one with 75\% agreement, as it is a balance between quantity and quality in the dataset, also taking into consideration the proportion between classes.
@@ -157,7 +154,7 @@ In Fig. \ref{fig:sentiment_distribution} the number of sentences per class is ev
     \label{fig:sentiment_distribution}
 \end{figure}
 
-TThe frequency distribution of document lengths helped determine the maximum number of tokens to use (considering the limit is 512 for BERT), as shown in Fig. \ref{fig:word_count_distribution}.
+The frequency distribution of document lengths helped determine the maximum number of tokens to use (considering the limit is 512 for BERT), as shown in Fig. \ref{fig:word_count_distribution}.
 
 \begin{figure}[H]
     \centering
@@ -205,7 +202,7 @@ Prior to the model training we have performed 5-fold cross validation for hyperp
 
 \section{Model Architectures: BERT, LSTM, and FastText}
 
-With the maining goal of classifying the sentiment of sentences, we have selected three models for an initial assessment, and proceeded with more complex iterations on the best model. The models selected were: Long Short-Term Memory (LSTM), fastText, and BERT.
+With the maining goal of classifying the sentiment of sentences, we have selected three models for an initial assessment, and proceeded with more complex iterations on the best model. The final model was further developed with data augmentation, and weighted classes, that will be further detailed below. The models selected were: Long Short-Term Memory (LSTM), fastText, and BERT.
 
 \subsubsection{Long Short-Term  Memory}
 
@@ -238,19 +235,18 @@ The initial models went through rounds of 5-fold cross validation, with the hype
 %houve fine tunning dos hyp para cada um dos modelos usando 5-fold cv para a escolha destes e depois retreino com estes hyp nos dados de treino completos (tabela abaixo para espaço de procura \ref{tab:basemodel_hyp})
 
 \begin{table}[H]
-    \caption{Hyperparameter search space for the initial models.}
-    % os comandos \phantom é para adicionar espaço para as tabelas terem a mesma width, não apagar
+    \caption{Hyperparameter search space and selected values for the initial models.}
     \centering
     \label{tab:basemodel_hyp}
     \begin{subtable}[t]{0.45\textwidth}
         \centering
-        \begin{tabular}{ll}
+        \begin{tabular}{lll}
         \toprule
-        \textbf{Hyperparameter} & \textbf{Possible Values} \\
+        \textbf{Hyperparameter} & \textbf{Search Space} & \textbf{Selected Value} \\
         \midrule
-        Epochs \phantom{abcng dimensi} & $\{20, 21, \ldots, 99\}$ \phantom{o}\\
-        Learning rate           & $[10^{-5}, 10^{-2}]$ \\
-        Embedding dimension     & $\{100, 200, 300\}$ \\
+        Epochs & $\{20, 21, \ldots, 99\}$ & 88 \\
+        Learning rate & $[10^{-5}, 10^{-2}]$ & $4\times10^{-3}$ \\
+        Embedding dimension & $\{100, 200, 300\}$ & 200 \\
         \bottomrule
         \end{tabular}
         \vspace{.3em}
@@ -258,18 +254,19 @@ The initial models went through rounds of 5-fold cross validation, with the hype
         \label{parameters_basefasttext}
         \vspace{.1em}
     \end{subtable}
+
     \begin{subtable}[t]{0.45\textwidth}
         \centering
-        \begin{tabular}{ll}
+        \begin{tabular}{lll}
         \toprule
-        \textbf{Hyperparameter} & \textbf{Possible Values} \\
+        \textbf{Hyperparameter} & \textbf{Search Space} & \textbf{Selected Value} \\
         \midrule
-        Epochs                  & $\{2, 3, 5, 8, 10, 15\}$ \\
-        Learning rate           & $[10^{-5}, 10^{-3}]$ \\
-        Embedding dimension     & $\{32, 64, 128, 256\}$ \\
-        LSTM units              & $\{32, 64, 128, 256\}$ \\
-        Dropout                 & $[0, 0.5]$ \\
-        Recurrent dropout       & $[0, 0.5]$ \\
+        Epochs & $\{2, 3, 5, 8, 10, 15\}$ & 5 \\
+        Learning rate & $[10^{-5}, 10^{-3}]$ & $10^{-4}$ \\
+        Embedding dimension & $\{32, 64, 128, 256\}$ & 256 \\
+        LSTM units & $\{32, 64, 128, 256\}$ & 64 \\
+        Dropout & $[0, 0.5]$ & 0.3 \\
+        Recurrent dropout & $[0, 0.5]$ & 0.3 \\
         \bottomrule
         \end{tabular}
         \vspace{.3em}
@@ -277,15 +274,16 @@ The initial models went through rounds of 5-fold cross validation, with the hype
         \vspace{.1em}
         \label{parameters_baselstm}
     \end{subtable}
+
     \begin{subtable}[t]{0.45\textwidth}
         \centering
-        \begin{tabular}{ll}
+        \begin{tabular}{lll}
         \toprule
-        \textbf{Hyperparameter} & \textbf{Possible Values} \\
+        \textbf{Hyperparameter} & \textbf{Search Space} & \textbf{Selected Value} \\
         \midrule
-        Epochs \phantom{abcng disnsin} & $\{1,2,3,4,5\}$ \phantom{onds} \\
-        Learning rate & $[10^{-5}, 10^{-2}]$ \\
-        Weight decay & $[0, 0.5]$ \\
+        Epochs & $\{1,2,3,4,5\}$ & 2 \\
+        Learning rate & $[10^{-5}, 10^{-2}]$ & $10^{-4}$ \\
+        Weight decay & $[0, 0.5]$ & 0.1 \\
         \bottomrule
         \end{tabular}
         \vspace{.3em}
@@ -293,6 +291,7 @@ The initial models went through rounds of 5-fold cross validation, with the hype
         \label{parameters_basebert}
     \end{subtable}
 \end{table}
+
 
 After fitting the models with the best hyperparameters, the models were trained on the complete training set, with the results in Table \ref{basemodel_models}.
 %após ajuste dos modelos com os melhores hyperparaemtros, tendo em conta a validation loss, aos dados completos de treino, resultaram os seguintes resultados \ref{basemodel_models} | JP: talvez valha apena criar um anexo por forma a que a informação de todos os modelos fique consolidada num sítio
@@ -340,17 +339,18 @@ From the learning curve (Fig. \ref{fig:base_bert_learning_curve}) the model seem
     \label{fig:base_bert_learning_curve}
 \end{figure}
 
-From the confusion matrix and training metrics (Fig. \ref{fig:base_bert_confusion_matrix_Train} and Table \ref{cr_basebert_train})
+From the confusion matrix and training metrics (Fig. \ref{fig:base_bert_confusion_matrix_Train} and Table \ref{cr_basebert_train}), the model seems to learn well, with no class suffering in particular in terms of performance. 
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/base_bert_confusion_matrix_Train.png}
-    \caption{base bert conf matri train}
+    \caption{Confusion matrix for the training set with the BERT model.}
     \label{fig:base_bert_confusion_matrix_Train}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{Classification report for BASE BERT on training data.}
+\caption{Classification report for B-BERT on training data.}
 \label{cr_basebert_train}
 \begin{tabular}{lcccccc}
 \toprule
@@ -367,16 +367,18 @@ Positive & 0.96 & 0.97 & 0.96 & 336 \\
 \end{tabular}
 \end{table}
 
+From the test results (Fig. \ref{fig:base_bert_confusion_matrix_Test} and Table \ref{cr_basebert_test}), the model is overfit, having difficulties to generalize and achieve similar scores as before, with the macro average being significantly below that of the training set.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/base_bert_confusion_matrix_Test.png}
-    \caption{base bert cong matrix test}
+    \caption{Confusion matrix for the test set with the B-BERT model.}
     \label{fig:base_bert_confusion_matrix_Test}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{Classification report for BASE BERT on test data.}
+\caption{Classification report for B-BERT on test data.}
 \label{cr_basebert_test}
 \begin{tabular}{lcccccc}
 \toprule
@@ -393,86 +395,109 @@ Positive & 0.84 & 0.92 & 0.88 & 178 \\
 \end{tabular}
 \end{table}
 
-ligeiro overfitting e tais
+%ligeiro overfitting e tais
 
-\subsection{data augmention model}
+\subsection{Data augmentation model — DA-BERT}
 
-para esta abordagem foi usada online data augmention nas várias frases do dataset de treino do 75Agree,, como o bert pela literatura e como pela nossa observacao tem uma performance signigicativamente melhor, é o unico q vamos usar
+To improve the capability of generalizing of the model, we implemented an online data augmentation strategy, consisting of back-translation (translation-based augmentation using intermediate pivoting para-phrasing, english to german and back in our case), lexical subsitution (where random words are replaced with WordNet-based synonyms), and template-based augmentation (by using name entity recognition, the identified words are replaced with template word as ORG or DATE, to generalize the sentence). Some examples of this augmentation are available in Table \ref{tab:fpb_augm_examples}.
 
-esta data augmentation consistitiu em:
+%para esta abordagem foi usada online data augmention nas várias frases do dataset de treino do 75Agree,, como o bert pela literatura e como pela nossa observacao tem uma performance signigicativamente melhor, é o unico q vamos usar
 
-Back-Translation : Translation-based augmentation using intermediate language pivoting to generate paraphrases.
+%esta data augmentation consistitiu em:
+
+%Back-Translation : Translation-based augmentation using intermediate language pivoting to generate paraphrases.
 
 %em especificio foi traduzir de ingles para uma outra ingles, neste caso o alemão e dps de volta para inglês
 
-Lexical Substitution : Random substitution of words with WordNet-based synonyms.
+%Lexical Substitution : Random substitution of words with WordNet-based synonyms.
 
 % big = huge
 
-Template-Based Augmentation : Named Entity-aware augmentation by replacing entities (ORG, DATE, EVENT) using slot-filling over extracted templates.
+%Template-Based Augmentation : Named Entity-aware augmentation by replacing entities (ORG, DATE, EVENT) using slot-filling over extracted templates.
 
 % Apple, Microsof -> <ORG>, dates -> <DATE>, ...
 
-alguns exemplos desta augmention são
-
-1. In the building and home improvement trade , sales decreased by 22.5\% to EUR 201.4 mn .
-
--> in the building and diy trade, sales decreased by 22. 5\% to eur 201. 4 million.
-
-2. In a media advisory , .......
-
--> in a media consultation
-
-3. In January-June 2010 , diluted loss per share stood at EUR0 .3 versus EUR0 .1 in the first half of 2009 .
-
--> in the first half of 2009, diluted loss per share stood atomic number 85 eur0. 3 versus eur0. 1 in the first half of 2009.
-
-
-
-
-\begin{table}[H]
+\begin{table}[ht]
 \centering
-\caption{Hyperparameter space for ......}
-\label{parameters_basebert}
-\begin{tabular}{ll}
+\caption{Example sentences from the Financial PhraseBank and their augmented examples.}
+\label{tab:fpb_augm_examples}
+\begin{tabular}{p{3.5cm}p{3.5cm}}
 \toprule
-\textbf{Hyperparameter} & \textbf{Possible Values} \\
+\textbf{Original} & \textbf{Augmented} \\
 \midrule
-Epochs & $\{1,2,3,4,5\}$ \\
-Learning rate & $[10^{-5}, 10^{-2}]$ \\
-Weight decay & $[0, 0.5]$ \\
+In the building and home improvement trade, sales decreased by 22.5\% to EUR 201.4 mn. & In the building and DIY trade, sales decreased by 22.5\% to EUR 201.4 million. \\
+In a media advisory, ... & In a media consultation, ... \\
+In January–June 2010, diluted loss per share stood at EUR 0.3 versus EUR 0.1 in the first half of 2009. & In the first half of 2009, diluted loss per share stood at EUR 0.3 versus EUR 0.1 in the same period of 2008. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-best hyperameters: 
 
-- Num train epochs: 2
+%alguns exemplos desta augmention são
 
-- Learning rate: 0.0001
+%1. In the building and home improvement trade , sales decreased by 22.5\% to EUR 201.4 mn .
 
-- Weight decay: 0.1
+%-> in the building and diy trade, sales decreased by 22. 5\% to eur 201. 4 million.
+
+%2. In a media advisory , .......
+
+%-> in a media consultation
+
+%3. In January-June 2010 , diluted loss per share stood at EUR0 .3 versus EUR0 .1 in the first half of 2009 .
+
+%-> in the first half of 2009, diluted loss per share stood atomic number 85 eur0. 3 versus eur0. 1 in the first half of 2009.
+
+
+We ran the cross-validation procedure mentioned previously, with the search space and selected value indicated in Table \ref{parameters_basebert}.
+
+\begin{table}[H]
+\centering
+\caption{Hyperparameter space and selected values for fine-tuning.}
+\label{parameters_basebert}
+\begin{tabular}{lll}
+\toprule
+\textbf{Hyperparameter} & \textbf{Search Space} & \textbf{Selected Value} \\
+\midrule
+Epochs & $\{1,2,3,4,5\}$ & 2 \\
+Learning rate & $[10^{-5}, 10^{-2}]$ & $10^{-4}$ \\
+Weight decay & $[0, 0.5]$ & 0.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%best hyperameters: 
+
+%- Num train epochs: 2
+
+%- Learning rate: 0.0001
+
+%- Weight decay: 0.1
+
+With this, the model was trained on the full training set, and from the learning curve (Fig. \ref{fig:data_augmented_bert_learninc_curve}) we can see the model was capable of generalizing well throughout the training routine, with validation increasing slightly between the $50^{\textnormal{th}}$ and $80^{\textnormal{th}}$ steps, but then following the downward trend to the end of the training, without early stopping (considering the number of epochs was included in the CV procedure, this was expected).
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/data_augmented_bert_learninc_curve.png}
-    \caption{learning curve}
+    \caption{DA-BERT learning curve on the augmented data.}
     \label{fig:data_augmented_bert_learninc_curve}
 \end{figure}
 
 
-aqui \ref{fig:data_augmented_bert_learninc_curve} ela ainda nao convergiu, mas pq fizemos cv com o numero de epochs é como se fosse um earlystopping
+%aqui \ref{fig:data_augmented_bert_learninc_curve} ela ainda nao convergiu, mas pq fizemos cv com o numero de epochs é como se fosse um earlystopping
+
+The confusion matrix from the training (Fig. \ref{fig:dataaugmented_bert_confusion_matrix_Train}) shows that the model performed well, but slightly worse in particular for the \textit{Positive} class, which can also be confirmed from the classification report (Table \ref{cr_augmbert_train}), where the recall is considerably lower. The overall metrics (accuracy, macro average and weighted average) show a worse performance than the base BERT model.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/dataaugmented_bert_confusion_matrix_Train.png}
-    \caption{data augm bert conf matri train}
+    \caption{Confusion matrix for the data augmented DA-BERT model on training data.}
     \label{fig:dataaugmented_bert_confusion_matrix_Train}
 \end{figure}
 
+
 \begin{table}[H]
 \centering
-\caption{Classification report for data augm BERT on training data.}
+\caption{Classification report for data augm DA-BERT on training data.}
 \label{cr_augmbert_train}
 \begin{tabular}{lcccccc}
 \toprule
@@ -489,16 +514,19 @@ Positive & 0.94 & 0.83 & 0.88 & 336 \\
 \end{tabular}
 \end{table}
 
+From the test confusion matrix (Fig. \ref{fig:dataaugmented_bert_confusion_matrix_Test}) there is a slight decrease for the \textit{Negative} and \textit{Neutral} classes, whereas the \textit{Positive} class keeps as is. The trend is confirmed from the classification report (Table \ref{cr_augmbert_test}), showing slightly worse metrics than for the training data, highlighting the lack of generalization in the model.
+%If your augmentation produces inputs that deviate too far from the real distribution (especially test-time distribution), the model learns artifacts that do not transfer. Example: if you apply aggressive paraphrasing, BERT may learn to rely on patterns not present in real test inputs.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/dataaugmented_bert_confusion_matrix_Test.png}
-    \caption{data augm bert cong matrix test}
+    \caption{Confusion matrix for the data augmented DA-BERT model on test data.}
     \label{fig:dataaugmented_bert_confusion_matrix_Test}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{Classification report for data augm BERT on test data.}
+\caption{Classification report for data augm DA-BERT on test data.}
 \label{cr_augmbert_test}
 \begin{tabular}{lcccccc}
 \toprule
@@ -515,19 +543,23 @@ Positive & 0.80 & 0.83 & 0.81 & 178 \\
 \end{tabular}
 \end{table}
 
-os resultados nao apresentam indicios de overfitting e vao ao encontro da literatura
+The model seems to be well fit, despite slight differences between training and test metrics, these can be explained given the data augmentation pipeline, that pushes the model towards generalization, while losing more obvious patterns that are kept in the undisturbed test set. 
 
-tabela do research, 0.90 de accuracy do finbert q era finetunning do finbert neste dataset ou qq coisa assim
+%os resultados nao apresentam indicios de overfitting e vao ao encontro da literatura
+
+%tabela do research, 0.90 de accuracy do finbert q era finetunning do finbert neste dataset ou qq coisa assim
 
 
 
-\subsection{weighted model}
+\subsection{Weighted model — W-BERT}
 
-a ideia desta abordagem é q havendo o equilibrio entre quantidade e qualidade dos dados, ao inves de ter de haver uma filtragem dos documentos usadas tendo por base o nível de concordância, por que não usar todos mas atribuindo pesos diferentes aos diferentes niveis de agreement
+For this model the approach aims to achieve a balance between quantity and quality of data, rather than filtering documents based on the level of agreement. The goal was to introduce the level of agreement as penalty weights during training, with the model being more penalized for wrong classification of sentences with higher level of agreement and less so for the opposite cases.
 
-isto é, enquanto o modelo aprende, ser mais penalizado ou dar mais importância quando classifica mal uma instância com maior nível de agreement, e não tanta aos níveis mais baixos
+After some testing, we ended up with the following formula for the class weights as $i$, with $i \in \{\text{50Agree, 66Agree, 75Agree, AllAgree}\}$.
 
-após algumas experiencias empiricas, chegou-se a seguinte formula para o weight da classe $i$, com $i \in \{\text{50Agree, 66Agree, 75Agree, AllAgree}\}$.
+%a ideia desta abordagem é q havendo o equilibrio entre quantidade e qualidade dos dados, ao inves de ter de haver uma filtragem dos documentos usadas tendo por base o nível de concordância, por que não usar todos mas atribuindo pesos diferentes aos diferentes niveis de agreement
+
+%isto é, enquanto o modelo aprende, ser mais penalizado ou dar mais importância quando classifica mal uma instância com maior nível de agreement, e não tanta aos níveis mais baixos
 
 $$
 w_i = \text{scale} \cdot p_i = \left( \frac{N}{\sum_{j=1}^k n_j \cdot p_j} \right) \cdot  \left( \frac{e^{a_i}}{\sum_{j=1}^k e^{a_j}} \right) \text{,}
@@ -541,7 +573,7 @@ $$
 \{0.50, 0.66, 0.75, 1.0\}
 $$
 
-These values represent the degree of annotator consensus and are transformed exponentially using the softmax function
+These values represent the degree of annotator consensus and are transformed exponentially using the softmax function,
 
 $$
 p_i = \frac{e^{a_i}}{\sum_j e^{a_j}}
@@ -555,62 +587,65 @@ $$
 \text{scale} = \frac{N}{\sum_i n_i \cdot p_i}
 $$
 
-\noindent ensuring that the average weight across all training instances equals 1, preserving the comparability of the loss function with a weightless scenario, such as the test dataset.
+\noindent ensuring that the average weight across all training instances equals 1, preserving the comparability of the loss function with a weightless scenario, such as the test dataset. This approach leverages confidence information from agreement levels without distorting the overall loss scale during training.
 
-This approach leverages confidence information from agreement levels without distorting the overall loss scale during training.
+%esta formula é usada para atribuir os pesos aos diferentes niveis de agreemente que por sua vez, este peso é usado para multiplicar pela loss de cada instancia (tendo em conta a classe de agreement onde se encontra), fazendo com que a loss total ao longo do treino tenho mais um maior contributo dos maiores niveis de agreement face aos menores. ou seja usamos uma custom loss fucntion
 
-esta formula é usada para atribuir os pesos aos diferentes niveis de agreemente que por sua vez, este peso é usado para multiplicar pela loss de cada instancia (tendo em conta a classe de agreement onde se encontra), fazendo com que a loss total ao longo do treino tenho mais um maior contributo dos maiores niveis de agreement face aos menores. ou seja usamos uma custom loss fucntion
+In the end, we considered the dataset consisted of at least 75\% agreement, still discarding the 50\% and 66\% agreement level sentences. This decision was taken to keep the logic of the previous models, and also the fact that the lower confidence levels are so close to essentially the flip of a coin, leaving too much ambiguity in place, making it harder to assess the metrics. Considering the dataset for this model, and accounting for class balance, the training dataset for this model had 520 observations per class (rather than the 336 from earlier). The hyperparameter search space and selected are in table \ref{parameters_wbert}.
+%pelo facto de ja ter em conta o dataset todo, o class balance resultatou num total de 520 obs por classe de sentimento ao invés das 336 habituais (qnd era so 75 agreement), aumentado o conjunto de treino num total de 552 obs
 
-pelo facto de ja ter em conta o dataset todo, o class balance resultatou num total de 520 obs por classe de sentimento ao invés das 336 habituais (qnd era so 75 agreement), aumentado o conjunto de treino num total de 552 obs
-
-lalalala hyp
+%lalalala hyp
 
 \begin{table}[H]
 \centering
-\caption{Hyperparameter space for ......}
-\label{parameters_basebert}
-\begin{tabular}{ll}
+\caption{Hyperparameter space and selected values for fine-tuning.}
+\label{parameters_wbert}
+\begin{tabular}{lll}
 \toprule
-\textbf{Hyperparameter} & \textbf{Possible Values} \\
+\textbf{Hyperparameter} & \textbf{Search Space} & \textbf{Selected Value} \\
 \midrule
-Epochs & $\{1,2,3,4,5\}$ \\
-Learning rate & $[10^{-5}, 10^{-2}]$ \\
-Weight decay & $[0, 0.5]$ \\
+Epochs & $\{1, 2, 3, 4, 5\}$ & 3 \\
+Learning rate & $[10^{-5}, 10^{-2}]$ & $10^{-4}$ \\
+Weight decay & $[0, 0.5]$ & 0.1 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-best hyperameters: 
 
-- Num train epochs: 3
+%best hyperameters: 
 
-- Learning rate: 0.0001
+%- Num train epochs: 3
 
-- Weight decay: 0.1
+%- Learning rate: 0.0001
 
+%- Weight decay: 0.1
+
+The learning curve for training and validation loss (Fig. \ref{fig:weighted_bert_learning_curve}) shows how both training and validation decrease halfway through the training, at which point the validation loss increases slightly whereas training loss keeps decreasing. This might indicate some issues with the weighted approach, with the model being still too penalized for sentences with lower agreement level.
 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/weighted_bert_learning_curve.png}
-    \caption{learning curve}
+    \caption{Learning curve for W-BERT. JP | acho que não faz sentido ter valores de 0.25 na epoch, não houve paragens aí e pode induzir em erro | não temos steps}
     \label{fig:weighted_bert_learning_curve}
 \end{figure}
 
-na fig \ref{fig:weighted_bert_learning_curve} pode se ver a learning curve que representa a weighted loss fucntion dos dados de treino comparada com a loss fucntion dos dados de teste, sem qualquer peso, visto ser o nosso teste então é supsto dar a mesma importancia a tudo (ns explicar)
+This approach leveraged some interesting results, with the confusion matrix for the training set (Fig. \ref{fig:weighted_bert_confusion_matrix_Partial}) and classification report (Table \ref{cr_weightbert_train}, showing good evidence of the model learning to recognize the \textit{Negative} class. The improvement of the \textit{Positive} class reinforces the hypothesis that level of agreement is higher for this type of sentences, with ambiguity left for the neutral class.
 
-bla bla comprar metricas de teste e treino, mas por dificuldades de usar os pesos nesta analise foi ent selecionada só a porcao de dados de treino cujo agreement era supior a 75\% usado nos dados de treino, visto q o foco do trabalho se cinge neste conjunto, tendo todas as instancias o mesmo peso nestas metricas fig. \ref{fig:weighted_bert_confusion_matrix_Partial} e table \ref{cr_weightbert_train}. e até pq tp por exemplo na confusion matrix por ser quantidades de instancias seria injunto por exemplo instancias de baixo agreement penalizarem tanto como instancias de alto agreement.
+%na fig \ref{fig:weighted_bert_learning_curve} pode se ver a learning curve que representa a weighted loss fucntion dos dados de treino comparada com a loss fucntion dos dados de teste, sem qualquer peso, visto ser o nosso teste então é supsto dar a mesma importancia a tudo (ns explicar)
+
+%bla bla comprar metricas de teste e treino, mas por dificuldades de usar os pesos nesta analise foi ent selecionada só a porcao de dados de treino cujo agreement era supior a 75\% usado nos dados de treino, visto q o foco do trabalho se cinge neste conjunto, tendo todas as instancias o mesmo peso nestas metricas fig. \ref{fig:weighted_bert_confusion_matrix_Partial} e table \ref{cr_weightbert_train}. e até pq tp por exemplo na confusion matrix por ser quantidades de instancias seria injunto por exemplo instancias de baixo agreement penalizarem tanto como instancias de alto agreement.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/weighted_bert_confusion_matrix_Partial Train.png}
-    \caption{weighted bert conf matri PARTIAL train}
+    \caption{Confusion matrix for the weighted W-BERT model on a larger training dataset. | JP: o partial train na imagem pode induzir em erro. Já expliquei no texto que não é no full dataset, apenas de 75\% para cima, acho que é suficiente}
     \label{fig:weighted_bert_confusion_matrix_Partial}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{Classification report for weight BERT on PARTIAL training data.}
+\caption{Classification report for weighted W-BERT on a larger training dataset.}
 \label{cr_weightbert_train}
 \begin{tabular}{lcccccc}
 \toprule
@@ -627,17 +662,19 @@ Positive & 0.90 & 0.85 & 0.93 & 709 \\
 \end{tabular}
 \end{table}
 
+The confusion matrix on the test set (Fig. \ref{fig:weighted_bert_confusion_matrix_Test}) and the classification report (Table \ref{cr_wbert_test} show a slight decrease in performance metrics, but overall well fit to the data. From the confusion matrix there doesn't seem a considerable change in identifying the classes, nor a straightforward interpretation of any two classes.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/weighted_bert_confusion_matrix_Test.png}
-    \caption{weight bert cong matrix test}
+    \caption{Confusion matrix for the W-BERT model on test data.}
     \label{fig:weighted_bert_confusion_matrix_Test}
 \end{figure}
 
 \begin{table}[H]
 \centering
 \caption{Classification report for weight BERT on test data.}
-\label{cr_augmbert_test}
+\label{cr_wbert_test}
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\
@@ -653,52 +690,53 @@ Positive & 0.88 & 0.89 & 0.89 & 178 \\
 \end{tabular}
 \end{table}
 
-para melhorar estes resultados poderia ser levado a cabo um fine tuning ou a escolha por parte de um expert dos raw agreement scores ou uma melhoria da formula dos pesos
+These results may be improved if more precise ways of determining the agreement level between annotators are implemented, or by revisiting our approach to how the weights are accounted in the training procedure.
+% para melhorar estes resultados poderia ser levado a cabo um fine tuning ou a escolha por parte de um expert dos raw agreement scores ou uma melhoria da formula dos pesos
 
 
 \section{Discussion}
 
-results discuttion
+The metrics of the three BERT model 
+results are displayed in Fig. \ref{fig:results_radarchart}, and at a first glance the base BERT model outperforms the two others, but very fine margins. Considering that the test set is a part of the training set, it is fair enough to assume that the base model is overfit to this type of data, making it suitable for this very specific case. More importantly, the models that are better at generalization, still do well in this particular case, with the performance metrics very close to those of the base model.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/results_radarchart.png}
-    \caption{radar chart results in test set (métricas são MACRO avg)}
+    \caption{Radar chart of the macro performance metrics of the BERT models.}
     \label{fig:results_radarchart}
 \end{figure}
 
-\ref{fig:results_radarchart} mostra que as tres abordagens criam modelos com metricas comparativas, apesar de neste caso o modelo Base BERT mostrar um desempenho superior a todos os outros em todas as metricas, mas tendo em conta o seu possivel overfifting, acaba por haver mais destaque para o weighted bert que o acaba por bater em algumas métricas tlvz sem o problema do overtffintg
+%\ref{fig:results_radarchart} mostra que as tres abordagens criam modelos com metricas comparativas, apesar de neste caso o modelo Base BERT mostrar um desempenho superior a todos os outros em todas as metricas, mas tendo em conta o seu possivel overfifting, acaba por haver mais destaque para o weighted bert que o acaba por bater em algumas métricas tlvz sem o problema do overtffintg
 
-tbm temos os resultados em tabela:
+%tbm temos os resultados em tabela:
+The models did well in comparison with the literature as seen in Table \ref{results_table}. The results depend on the agreement level of the test set, but overall the models trained are within the benchmark of the literature.
 
 \begin{table}[H]
 \centering
-\caption{prefomece comparacion int test set vs literature aka soota}
+\caption{Performance comparison on the test set (75\% agreement) vs. literature baselines.}
 \label{results_table}
-\begin{tabular}{lcc}
+\begin{tabular}{lccc}
 \toprule
-\textbf{Model} & \textbf{Accuracy} & \textbf{F1 (macro)} \\
+\textbf{Model} & \textbf{Accuracy} & \textbf{F1 (macro)} & \textbf{Agreement Level} \\
 \midrule
-base BERT & 0.92 & 0.91 \\
-data augm BERT & 0.89 & 0.87 \\
-weifhted BERT & 0.92 & 0.90 \\
-literaturas1 & xxx & ver \\
-literaturas2 & yyy & GPT \\
-literaturas3 & zzz & research?? \\
+B-BERT & 0.92 & 0.91 & 75\% \\
+DA-BERT & 0.89 & 0.87 & 75\% \\
+W-BERT & 0.92 & 0.90 & 75\% \\
+Malo (2014) & 0.94 & 0.78 & 75\% \\
+Araci (2019) & 0.86 & 0.85 & not reported \\
+Atsiwo (2024) & 0.89 & 0.88 & 100\% \\
+Sun \textit{et al.} (2025) & - & 0.98 & 100\% \\
+Choe (2023) & 0.86 & 0.84 & not reported \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+
 \section{Conclusion}
 
-conclisao
+In this work we have explored different models, machine learning and deep learning, to perform sentiment classification in sentences related to financial news. The approach was defined to assess different models, in order to further explore the best, considering literature's best practices. Among the tested models, BERT performed much better than fastText and LSTM, and was further developed by employing a data augmentation pipeline, and separately a weighted approach based on the agreement level. Both cases performed close to the initial model, but due to improved generalization showed slightly poorer performance metrics.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{image.png}
-    \caption{Enter Caption}
-    \label{fig:enter-label}
-\end{figure}
+For future work, we will implement the two strategies simultaneously, while testing the models on different datasets to minimize the impact of having the performance metrics influenced by potential overfitting. Along with this, the weighted approach needs further investigation, to the point where the model might consider the sentence (structure, wording, and other patterns) to estimate the level of confidence on the estimation.
 
 \section*{Work Load}
 
