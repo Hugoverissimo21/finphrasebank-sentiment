@@ -1,50 +1,29 @@
-# CAA02
+# Sentiment Classification of Financial Texts
 
-Project 
+- Hugo Veríssimo
 
-## Data
+- João Cardoso
 
-### Data Source
+## Abstract
 
-https://huggingface.co/datasets/takala/financial_phrasebank
+This work explores financial sentiment analysis using the Financial PhraseBank dataset, a benchmark in the field for its annotated financial news snippets. The performance of three different models, fastText, LSTM, and BERT, is evaluated and compared on a selected subset with 75\% annotator agreement. BERT-based models significantly outperform the others, motivating further refinement through data augmentation and a novel weighted training strategy that incorporates annotator agreement levels during training. The proposed models achieve performance in line with, or surpassing, literature baselines, demonstrating the importance of both architecture selection and annotation-informed weighting schemes in financial NLP.
 
-which contains 50agree, 66agree, 75agree, allagree: all inside `data/FinancialPhraseBank-v1.0`
+## Data Source
 
-### Data TO BE USED
+[Financial PhraseBank](https://huggingface.co/datasets/takala/financial_phrasebank)
 
-for **test** `data/75Agree_test.csv` should **ALWAYS** be used, its our benchmark
+## Files Description
 
-for **train** you can either use `data/75Agree_train.csv` OR `data/AnyAgree_train.csv`. 75Agree_train.csv contains the *normal* train set, while AnyAgree_train.csv contains the *extended* train set, so you can atribute weights based on agreement level
+- `assets/` - contains the assets used in the project, such as figures
 
-## Models
+- `data/` - contains the FinancialPhraseBank dataset and train/test split
 
-1. Base Model
+- `report/` - contains the report latex files
 
-    - Train and Test: 75Agree_train.csv and 75Agree_test.csv
-    - Data balance
-    - Some model
-    - lalla
-    - IDEA: maybe use different backbones and then with the best apply the model 2 and 3 idk
-    - MISSING: save results (plots and metrics), and note the each run has differente results;; exprimentar varios "backbones"/arquiteturas
+- `data EDA.ipynb` - contains the exploratory data analysis of the dataset
 
-2. Data Augmentation Model
+- `model *.ipynb` - contains the model training and evaluation code
 
-    - Train and Test: 75Agree_train.csv and 75Agree_test.csv
-    - Data balance
-    - Some model
-    - **Use data augmentation** techniques such as back-translation, synonym replacement, etc.
-    - https://neptune.ai/blog/data-augmentation-nlp
-    - lalla
-    - MISSING: cv for hyp tuning, ...
+- `model *.csv` - contains the model cross-validation results
 
-3. Weights Model
-
-    - Train and Test: AnyAgree_train.csv and 75Agree_test.csv
-    - Data balance
-    - Some model
-    - **Use weights based on agreement level** (50agree, 66agree, 75agree, allagree)
-    - lalla
-
-4. ... ?!?!?!
-
-    - ?!?!?!
+- `results.ipynb` - contains the comparison of the models
