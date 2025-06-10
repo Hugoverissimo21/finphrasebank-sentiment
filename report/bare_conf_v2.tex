@@ -59,7 +59,7 @@ This work explores financial sentiment analysis using the Financial PhraseBank d
 
 With the ever-increasing volume of information created and distributed by the minute, access to fast and reliable analysis of encountered information is more important than ever. Especially with the democratized access to financial instruments and capital markets, where individuals have the possibility to invest in virtually any company on the stock exchange, it is important to have ways to leverage against giant institutions with hundreds of financial analysts at their disposal. 
 
-Historically, financial analysis relied heavily on fundamental analysis (examining earnings, balance sheets, annual financial reports), which required extensive knowledge in the field (also the strategy that made Warren Buffett one of the richest men in the world), along with technical analysis (studying price and volume trends). Around 2010, after the 2008 global financial crisis, there was a surge in news analysis to evaluate the tone and derive investment strategies from it \cite{tetlock2007giving}. Due to the lack of domain specific lexicon these analysis were falible, until the work by Loughran and McDonald was published, a financial lexicon based on 10-K forms (i.e., annual financial reports) and dictionaries \cite{loughran2011liability}. This allowed to use more sofisticated analysis rather than using the presence of negative words as a signal to sell.
+Historically, financial analysis relied heavily on fundamental analysis (examining earnings, balance sheets, annual financial reports), which required extensive knowledge in the field (also the strategy that made Warren Buffett one of the richest men in the world), along with technical analysis (studying price and volume trends). Around 2010, after the 2008 global financial crisis, there was a surge in news analysis to evaluate the tone and derive investment strategies from it \cite{tetlock2007giving}. Due to the lack of domain specific lexicon these analysis were fallible, until the work by Loughran and McDonald was published, a financial lexicon based on 10-K forms (i.e., annual financial reports) and dictionaries \cite{loughran2011liability}. This allowed to use more sophisticated analysis rather than using the presence of negative words as a signal to sell.
 
 Upon the launch of Twitter, information streams increased dramatically, making more and more data available for analysis. But, machine learning was not heavily used, as most data was not annotated, or there was very little data with high-quality annotations. In 2014, P. Malo \textit{et al.} published a fundamental dataset for financial sentimental analysis, that is still used, the Financial Phrasebank. It is unique, for the inclusion of important aspects as directional expressions (e.g., profits decreased), entity polarity shifts (e.g. profits may be negative if decreased), and phrase level context \cite{malo2014good}.
 
@@ -71,13 +71,13 @@ The field of NLP has grown drastically in the past decade, progressing from recu
 
 In the work of Araci (2019), the author developed a BERT-based model trained specifically on texts with financial data. BERT, Bidireccional Encoder Representations from Transformers, is a large language model developed by Google (2018), benefitting largely from the fact that it can "hold" in memory large chunks and in both directions, simultaneously \cite{devlin2019bert}. The fact that it is built on the Transformer encoder architecture, it can weigh the importance of different words in a sentence by using a self-attention. The model is pre-trained  on large unlabelled corpora (e.g., Wikipedia, BookCorpus), and can be fine-tuned for specific purposes. In this work, the end model was trained on  domain specific corpus such as TRC2-financial data and financial specific texts (over ~440 000 sentences), and then fine tuned with the Financial Phrasebank. The model achieved an accuracy of 97\% and a F1-score of 95\% on the Financial Phrasebank dataset with 100\% agreement, but only 86\% and 84\%, respectively, on the dataset with all levels of agreement (the agreement will be further detailed in the Methodology section) \cite{araci2019finbert}. 
 
-Later on the model was further improved by Sun \textit{et al.} (2025), EnhancedFinSentiBERT, by including dictionary embeddings, expanded corpus that deversified the pre-training stage drastically, and a novel neutral sentiment module, that further enhanced the distinction between neutral and weak sentiments, resulting F1-score (87\%). The pre-training stage benefited from the large diversity of the corpus, going from a few million tokens to 2.4 B tokens with the latest version \cite{sun2025financial}.
+Later on the model was further improved by Sun \textit{et al.} (2025), EnhancedFinSentiBERT, by including dictionary embeddings, expanded corpus that diversified the pre-training stage drastically, and a novel neutral sentiment module, that further enhanced the distinction between neutral and weak sentiments, resulting F1-score (87\%). The pre-training stage benefited from the large diversity of the corpus, going from a few million tokens to 2.4 B tokens with the latest version \cite{sun2025financial}.
 
 In a similar direction, but at the fine-tuning level, Atsiwo (2024) improved the data used in fine-tuning, considering that most datasets have relatively short sentences ($<$ 100 tokens), failing to leverage the full context window  of LLMs like BERT (512 tokens). This was achieved by augmenting  the training data with synthetic sentences generated by GPT-4, with accuracy of 89\% and F1-score of 88\% for 50\% agreement dataset \cite{atsiwo2024financial}. 
 
 GPT has been used with different purposes, as in the work by Fatouros \textit{et al.} (2023), where GPT-3.5Turbo was used for zero-shot sentiment classification. These conditions are harder on the model, as it never undergoes specific training for the context, relying solely on its pre-training (hence the poorer performance against finely tuned models). Under the same conditions (not using the Financial PhraseBank, but scraped headlines related with forex trading), it outperformed finely-tuned models with an accuracy of 75\% and F1-score of 74\% (finely tuned models in zero-shot conditions achieve accuracy of 56\% and F1-score of 55\%) \cite{fatouros2023chatgpt}.
 
-The BERT model was revisited by different researchers, but a new iteration from Facebook AI was proposed (2019) named RoBERTa (Robustly Optimized BERT Approach) was developed, that used a signficantly larger corpus for training (10x larger), and a dynamic masking technique during training, that allowed the model to learn new contextual relations while using the same sentences, making it more robust \cite{liu2019roberta}. This model was used to develop financial models, where the work Choe \textit{et al.} (2023) is worth mentioning, where a large corpus of financial texts were fed to the model for training, from a range of sources (e.g., Reuters, SEC fillings, EIA). The model (FiLM, Financial Language Model) benefited from the diversity of training data, rather than simply focusing on fine tuning with highly curated data, showing improved generalization and better metrics than FinBERT and RoBERTa (accuracy 86\%, F1-score 84\%) \cite{choe2023exploring}.
+The BERT model was revisited by different researchers, but a new iteration from Facebook AI was proposed (2019) named RoBERTa (Robustly Optimized BERT Approach) was developed, that used a significantly larger corpus for training (10x larger), and a dynamic masking technique during training, that allowed the model to learn new contextual relations while using the same sentences, making it more robust \cite{liu2019roberta}. This model was used to develop financial models, where the work Choe \textit{et al.} (2023) is worth mentioning, where a large corpus of financial texts were fed to the model for training, from a range of sources (e.g., Reuters, SEC filings, EIA). The model (FiLM, Financial Language Model) benefited from the diversity of training data, rather than simply focusing on fine tuning with highly curated data, showing improved generalization and better metrics than FinBERT and RoBERTa (accuracy 86\%, F1-score 84\%) \cite{choe2023exploring}.
 
 These models are improving substantially over the years, but it is different to put them to test against a controlled dataset from using them in real life, and the variety included as consequence. Competitions such as FinNLP help drive research in this field, by posing ever more diversified test sets, aiming to improve the robustness of models, and the solutions developed by the researchers.
 
@@ -88,11 +88,11 @@ To address the problem of sentiment classification in sentences related to finan
 
 \subsection{Dataset}
 
-The Financial PhraseBank is a widely used benchmark dataset for financial sentiment analysis. It consists of roughly 4,840 English sentences (mostly news headlines or short statements) about companies, drawn from financial news articles and press releases. Each sentence is labeled with one of three sentiment classes: positive, negative, or neutral, representing the sentence’s sentiment from the perspective of an investor \cite{dataset, malo2014good}.
+The Financial PhraseBank is a widely used benchmark dataset for financial sentiment analysis. It consists of roughly 4,840 English sentences (mostly news headlines or short statements) about companies, drawn from financial news articles and press releases. Each sentence is labelled with one of three sentiment classes: positive, negative, or neutral, representing the sentence’s sentiment from the perspective of an investor \cite{dataset, malo2014good}.
 
 \begin{table}[H]
 \centering
-\caption{Financial PhraseBank distribution. Four possible sets within the dataset, depending on how many financial experts agreed with the attributed label. (majority agreement statistics). The dataset with 50\% agreement corresponds to the entire dataset.}
+\caption{Financial PhraseBank distribution. Four possible sets within the dataset, depending on how many financial experts agreed with the attributed label (majority agreement statistics). The dataset with 50\% agreement corresponds to the entire dataset.}
 
 \label{agreement_datasets}
 \begin{tabular}{lcccc}
@@ -110,7 +110,7 @@ Positive & 1363 & 1168 & 887 & 570 \\
 \end{tabular}
 \end{table}
 
-The dataset was labeled by 16 finance professionals, each responsible for labelling a subset of sentences. Each sentence was labelled by 5-8 annotators, and the resulting agreement score was a result of the fraction of annotators that labelled the sentence in the same manner. This resulted in 4 different subsets, where 50\% agreement corresponds to the entire dataset, with the dataset size decreasing as the level of agreement increases. It is important to mention that the agreement level corresponds to the least allowed, so the 50\% agreement level dataset contains the other subsets. The dataset sizes and class proportion can be consulted in Table \ref{agreement_datasets}, along with sample sentences and the attributed sentiment classification in Table \ref{tab:fpb_examples}.
+The dataset was labelled by 16 finance professionals, each responsible for labelling a subset of sentences. Each sentence was labelled by 5-8 annotators, and the resulting agreement score was a result of the fraction of annotators that labelled the sentence in the same manner. This resulted in 4 different subsets, where 50\% agreement corresponds to the entire dataset, with the dataset size decreasing as the level of agreement increases. It is important to mention that the agreement level corresponds to the least allowed, so the 50\% agreement level dataset contains the other subsets. The dataset sizes and class proportion can be consulted in Table \ref{agreement_datasets}, along with sample sentences and their corresponding sentiment classification in Table \ref{tab:fpb_examples}.
 
 This subset strategy allows researchers to find a balance between the amount and the quality of data, representing a common trade-off in the field of machine learning.
 
@@ -134,7 +134,7 @@ In banking , Sampo A was unchanged at 14.24 eur and Nordea rose 0.42 pct to 9.51
 
 Taking into consideration the different possible subsets, the one with 75\% agreement was selected, as it offers a balance between quantity and quality in the dataset, while also maintaining class proportion.
 
-In Fig. \ref{fig:sentiment_distribution} the number of sentences per class is evidence of how imbalanced the dataset is. As a result, we had to balance the dataset by undersampling all classes to the amount of examples for the \textit{Negative} class, keeping 336 sentences per class.
+In Fig. \ref{fig:sentiment_distribution} the number of sentences per class is evidence of how imbalanced the dataset is. As a result, the dataset was balanced by undersampling all classes to match the number of examples in the \textit{Negative} class, resulting in 336 sentences per class.
 
 \begin{figure}[H]
     \centering
@@ -162,7 +162,7 @@ The frequency distribution of document lengths helped determine the maximum numb
 
 %To identify words that are most indicative of sentiment class, word frequencies were compared across classes. Terms such as \textit{down}, \textit{decreased}, \textit{profit}, \textit{fell}, and \textit{rose} showed significantly higher frequency in specific sentiment categories, making them particularly relevant for classification.
 
-Figure \ref{fig:word_cloud_75agree} shows a word cloud with the most frequent words in the dataset subset with 75\% annotator agreement, highlighting key terms that dominate the financial news domain. To identify words most indicative of sentiment class, word frequencies were then compared across sentiment categories. Terms such as \textit{down}, \textit{decreased}, \textit{profit}, \textit{fell}, and \textit{rose} appeared with significantly higher frequency in specific classes, making them particularly relevant for classification.
+Figure \ref{fig:word_cloud_75agree} displays the most frequent words in the dataset subset with 75\% annotator agreement, highlighting key terms that dominate the financial news domain. To identify words most indicative of sentiment class, word frequencies were then compared across sentiment categories. Terms such as \textit{down}, \textit{decreased}, \textit{profit}, \textit{fell}, and \textit{rose} appeared with significantly higher frequency in specific classes, making them particularly relevant for classification.
 
 \subsection{Preprocessing}
 
@@ -179,7 +179,7 @@ Prior to model training, 5-fold cross-validation was performed for hyperparamete
 
 \section{Model Architectures: LSTM, FastText, and BERT}
 
-With the maining goal of classifying the sentiment of sentences, we have selected three models for an initial assessment, and proceeded with more complex iterations on the best model. The final model was further developed with data augmentation, and weighted classes, that will be further detailed below. The models selected were: Long Short-Term Memory (LSTM), fastText, and Bidirectional Encoder Representations from Transformers (BERT).
+With the primary goal of sentence-level sentiment classification, three models were initially evaluated, followed by more advanced iterations on the best-performing one. The final model was further developed with data augmentation, and weighted classes, that will be further detailed below. The models selected were: Long Short-Term Memory (LSTM), fastText, and Bidirectional Encoder Representations from Transformers (BERT).
 
 \subsubsection{Long Short-Term Memory}
 
@@ -255,7 +255,8 @@ The initial models went through rounds of 5-fold cross validation, with the hype
     \end{subtable}
 \end{table}
 
-After fitting the models with the best hyperparameters, the models were trained on the complete training set, with the results in Table \ref{basemodel_models}.
+After selecting the best hyperparameters, the models were retrained on the full training set. Results are summarized in Table \ref{basemodel_models}.
+
 \begin{table}[H]
 \centering
 \caption{Initial benchmark metric results across the models for both the training and test sets.}
@@ -273,7 +274,7 @@ BERT & 0.97 & 0.92 & 0.97 & 0.91 \\
 \end{tabular}
 \end{table}
 
-From the results, there is a clear gap between the models, with BERT performing best, followed by LSTM and fastText. These findings align with the literature, although LSTM can achieve better performance when using bi-LSTM. However, the purpose here was to evaluate \textit{vanilla} models as an initial assessment.
+Results show a clear performance gap between the models, with BERT performing best, followed by LSTM and fastText. These findings align with the literature, although LSTM can achieve better performance when using bi-LSTM. However, the purpose here was to evaluate \textit{vanilla} models as an initial assessment.
 
 Given BERT's superior performance, it was selected for more detailed analysis and further experimentation, with its evaluation metrics and class-wise error distribution examined below. From this point onward, this model is referred to as B-BERT. 
 
@@ -446,7 +447,7 @@ Positive & 0.80 & 0.83 & 0.81 & 178 \\
 \end{tabular}
 \end{table}
 
-The model seems to be well fit, despite slight differences between training and test metrics. These can be explained given the data augmentation pipeline, that pushes the model towards generalization, while losing more obvious patterns that are kept in the undisturbed test set. 
+The model appears well-fitted, despite slight differences between training and test metrics. These can be explained given the data augmentation pipeline, that pushes the model towards generalization, while losing more obvious patterns that are kept in the undisturbed test set. 
 
 \subsection{Instance Weighted Model - W-BERT}
 
