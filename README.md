@@ -2,11 +2,15 @@
 
 - Hugo Veríssimo
 
-- João Cardoso
+- [João Cardoso](https://github.com/jepe06)
 
 ## Abstract
 
 This work explores financial sentiment analysis using the Financial PhraseBank dataset, a benchmark in the field for its annotated financial news snippets. The performance of three different models, fastText, LSTM, and BERT, is evaluated and compared on a selected subset with 75\% annotator agreement. BERT-based models significantly outperform the others, motivating further refinement through data augmentation and a novel weighted training strategy that incorporates annotator agreement levels during training. The proposed models achieve performance in line with, or surpassing, literature baselines, demonstrating the importance of both architecture selection and annotation-informed weighting schemes in financial NLP.
+
+## Report
+
+Available [here](https://hugoverissimo21.github.io/finphrasebank-sentiment/report/CAA02.pdf).
 
 ## Data Source
 
